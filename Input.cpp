@@ -12,6 +12,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd)
         hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
     assert(SUCCEEDED(result));
 
+
     // キーボードデバイスの生成
 
     result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
