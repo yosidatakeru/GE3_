@@ -58,6 +58,7 @@ void WinApp::Initialize()
 
     // ウィンドウを表示状態にする
     ShowWindow(hwnd, SW_SHOW);
+
     timeBeginPeriod(1);
    
 
