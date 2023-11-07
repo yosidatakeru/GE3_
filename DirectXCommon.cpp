@@ -3,7 +3,7 @@
 
 #include<cassert>
 
-
+#include<thread>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -14,7 +14,7 @@ void DirectXCommon::Initialize(WinApp* winApp)
 {
     this->winApp = winApp;
    
-  
+    InitializeFixFPS();
    
     DeviceInitialize();
    
@@ -289,6 +289,36 @@ void DirectXCommon::InitializeFence()
 
 }
 
+void DirectXCommon::InitializeFixFPS()
+{
+    //現在の時間の記録
+    reference_ = std::chrono::steady_clock::now();
+}
+
+void DirectXCommon::UpdateFixFPS()
+{
+    //1/60秒ピッタリの時間
+    const std::chrono::microseconds kMinTime(uint64_t(1000000.0 / 60.0f));
+    
+    //1/60秒ピッタリの時間
+    const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0 / 65.0f));
+
+    //現在の時間の取得
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+
+    std::chrono::microseconds elapsed =
+        std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+
+    if (elapsed < kMinTime)
+    {
+        while (std::chrono::steady_clock::now() - reference_ < kMinTime)
+        {
+            std::this_thread::sleep_for(std::chrono::microseconds(1));
+        }
+    }
+    reference_ = std::chrono::steady_clock::now();
+}
+
 
 
 void DirectXCommon::Update()
@@ -371,7 +401,7 @@ void DirectXCommon::PosDeaw()
         WaitForSingleObject(event, INFINITE);
         CloseHandle(event);
     }
-
+    UpdateFixFPS();
     // キューをクリア
     result = commandAllocator->Reset();
     assert(SUCCEEDED(result));

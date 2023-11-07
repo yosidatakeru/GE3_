@@ -4,6 +4,7 @@
 #include<d3d12.h>
 #include"WinApp.h"
 #include <vector>
+#include<chrono>
 class DirectXCommon
 {
 public:
@@ -38,6 +39,9 @@ private:
 	//ƒtƒFƒ“ƒX
 	void InitializeFence();
 
+	void InitializeFixFPS();
+
+	void UpdateFixFPS();
 private:
 	WinApp* winApp = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Device> device;
@@ -69,6 +73,7 @@ private:
 
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
+	std::chrono::steady_clock::time_point reference_;
 };
 	
 	
