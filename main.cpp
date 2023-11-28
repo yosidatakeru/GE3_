@@ -1,11 +1,9 @@
 ﻿
-
-
-
 #include"Input.h"
 #include"WinApp.h"
 #include"DirectXCommon.h"
-
+//#include"SpriteCommon.h"
+#include"Sprite.h"
 
 
 
@@ -20,6 +18,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Input* input = nullptr;
     WinApp* winApp = nullptr;
     DirectXCommon* directXCommon = nullptr;
+    SpriteCommon* spriteCommon = nullptr;
+    Sprite* sprite = nullptr;
 #pragma region WindowsAPI初期化処理
     winApp = new WinApp();
     winApp->Initialize();
@@ -43,9 +43,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
+    spriteCommon = new SpriteCommon();
+    spriteCommon->Initialize(directXCommon);
 
-
-
+    sprite = new Sprite();
+    sprite->Initialize(directXCommon, spriteCommon);
 
     // ゲームループ
     while (true) {
@@ -65,7 +67,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
       
         directXCommon->PreDraw();
        
-
+        sprite->Draw();
         directXCommon->PosDeaw();
 
         
@@ -76,7 +78,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     delete input;
     delete winApp;
     delete directXCommon;
-
+    delete sprite;
 
    
     return 0;

@@ -42,6 +42,8 @@ private:
 	void InitializeFixFPS();
 
 	void UpdateFixFPS();
+	
+	
 private:
 	WinApp* winApp = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Device> device;
