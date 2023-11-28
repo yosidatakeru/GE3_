@@ -57,7 +57,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         }
 
         input->Update();
-        
+       
         // 数字の0キーが押されていたら
         if (input->TriggerKey(DIK_0))
         {

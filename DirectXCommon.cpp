@@ -321,9 +321,6 @@ void DirectXCommon::UpdateFixFPS()
 
 
 
-void DirectXCommon::Update()
-{
-}
 
 void DirectXCommon::PreDraw()
 {
