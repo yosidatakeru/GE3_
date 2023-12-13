@@ -43,6 +43,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
+
     spriteCommon = new SpriteCommon();
     spriteCommon->Initialize(directXCommon);
 
