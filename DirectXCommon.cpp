@@ -28,8 +28,10 @@ void DirectXCommon::Initialize(WinApp* winApp)
      
     InitializeFence();
     
-     
-   
+     //メモリの作成
+    rtvDescriptorHeapDesc = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+    srvDescriptorHeapDesc = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+
 
  
 
@@ -219,8 +221,7 @@ void DirectXCommon::InitializeRenderTargetView()
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
         // 裏か表かでアドレスがずれる
         rtvHandle.ptr += i * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-        // レンダーターゲットビューの設定
-        D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+       
         // シェーダーの計算結果をSRGBに変換して書き込む
         rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
         rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
@@ -317,6 +318,24 @@ void DirectXCommon::UpdateFixFPS()
         }
     }
     reference_ = std::chrono::steady_clock::now();
+}
+
+ID3D12DescriptorHeap* DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
+{
+    ID3D12DescriptorHeap* descriptorHeap = nullptr;
+
+
+    D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
+
+    descriptorHeapDesc.Type = heapType;
+    descriptorHeapDesc.NumDescriptors = numDescriptors;
+    descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+
+    assert(SUCCEEDED(hr));
+
+
+    return  descriptorHeap;
 }
 
 

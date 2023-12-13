@@ -20,6 +20,11 @@ public:
 
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 
+	DXGI_SWAP_CHAIN_DESC1 GeSwapChainDesc() const { return swapChainDesc; }
+
+	D3D12_RENDER_TARGET_VIEW_DESC GetRtvDesc()const { return rtvDesc; }
+
+	ID3D12DescriptorHeap* GetSrvDescriptorHeap() const { return srvDescriptorHeapDesc.Get(); }
 
 private:
 	//デバイスの初期化
@@ -43,6 +48,9 @@ private:
 
 	void UpdateFixFPS();
 	
+	//ディスクリプターヒープ
+	ID3D12DescriptorHeap* CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
+
 	
 private:
 	WinApp* winApp = nullptr;
@@ -76,6 +84,15 @@ private:
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
 	std::chrono::steady_clock::time_point reference_;
+
+	// レンダーターゲットビューの設定
+	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+
+	//ディスクリプタヒープ
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>rtvDescriptorHeapDesc;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>srvDescriptorHeapDesc;
+
+
 };
 	
 	
