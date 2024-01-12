@@ -5,7 +5,7 @@
 //#include"SpriteCommon.h"
 #include"Sprite.h"
 
-
+#include"ImGuiManager.h"
 
 
 
@@ -42,8 +42,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     input->Initialize(winApp);
 
 
-
-
+    ImGuiManager* imgui=  ImGuiManager::Create();
+    ImGuiManager::Initialize(winApp->GetHwnd(),directXCommon);
     spriteCommon = new SpriteCommon();
     spriteCommon->Initialize(directXCommon);
 
@@ -56,7 +56,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         {
             break;
         }
-
+        ImGuiManager::NewFrame();
+        imgui->ShowDemo();
         input->Update();
        
         // 数字の0キーが押されていたら
@@ -65,21 +66,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
             OutputDebugStringA("Hit 0\n");  // 出力ウィンドウに「Hit 0」と表示
         }
 
-      
+        ImGuiManager::CreateCommand();
         directXCommon->PreDraw();
        
         sprite->Draw();
+
+        ImGuiManager::CommandExcute(directXCommon->GetCommandList());
+
         directXCommon->PosDeaw();
 
         
 
     }
-
+    delete imgui;
     winApp->Finalize();
     delete input;
     delete winApp;
     delete directXCommon;
     delete sprite;
+   
 
    
     return 0;

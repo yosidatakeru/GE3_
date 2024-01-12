@@ -206,3 +206,25 @@ IDxcBlob* SpriteCommon::CompileShader(const std::wstring& filePath, const wchar_
 #pragma endregion
 
 }
+
+DirectX::ScratchImage SpriteCommon::LoadTexture(const std::wstring& filePath)
+{
+	HRESULT hr{};
+	//テクスチャファイルを読んでプログラムで扱えるようにする
+	DirectX::ScratchImage image{};
+	
+	hr = DirectX::LoadFromWICFile(filePath.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	assert(SUCCEEDED(hr));
+
+	//ミップマップの作成
+	//ミップマップ...元画像より小さなテクスチャ群
+	DirectX::ScratchImage mipImages{};
+	hr = DirectX::GenerateMipMaps(
+	image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+	DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	assert(SUCCEEDED(hr));
+
+	//ミップマップ月のデータを返す
+	return image;
+	
+}

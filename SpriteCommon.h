@@ -4,7 +4,7 @@
 #include <wrl.h> 
 #include"DirectXCommon.h"
 #include <d3d12.h>
-
+#include<DirectXTex.h>
 using namespace Microsoft::WRL;
 
 class SpriteCommon
@@ -23,6 +23,9 @@ public:
 
 	ID3D12RootSignature* GetRootSignature() const { return rootSignature.Get(); }
 	ID3D12PipelineState* GetGraphicsPipelineState() const { return  graphicsPipelineState.Get(); }
+
+	DirectX::ScratchImage LoadTexture(const std::wstring& filePath);
+
 private:
 	DirectXCommon* directXCommon_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignature;

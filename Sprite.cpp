@@ -25,7 +25,7 @@ void Sprite::Draw()
 {
 	
 	//回転処理(アップデート書くといいかも)
-	transform.rotate.y += 0.03;
+	//transform.rotate.y += 0.03;
 	//ワールド
 	XMMATRIX scaleMatrix = XMMatrixScalingFromVector(XMLoadFloat3(&transform.scale));
 	XMMATRIX rotateMatrix = XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&transform.rotate));
@@ -36,7 +36,7 @@ void Sprite::Draw()
 
 	//最終的行列返還
 	XMMATRIX worldMatrix = XMMatrixMultiply(rotationAndScaleMatrix, translationMatrix);
-	//*wvpData = worldMatrix;
+	*wvpData = worldMatrix;
 
 
 	//カメラ
