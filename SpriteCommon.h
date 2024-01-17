@@ -12,7 +12,7 @@ class SpriteCommon
 public:
 	
 	void Initialize(DirectXCommon* directXCommon);
-	
+	void SpritePreDraw();
 	////CompileShader関数
 	IDxcBlob* CompileShader(
 		const std::wstring& filePath,
@@ -23,6 +23,8 @@ public:
 
 	ID3D12RootSignature* GetRootSignature() const { return rootSignature.Get(); }
 	ID3D12PipelineState* GetGraphicsPipelineState() const { return  graphicsPipelineState.Get(); }
+	DirectXCommon* GetDirectXCommon() { return directXCommon_;}
+
 
 	DirectX::ScratchImage LoadTexture(const std::wstring& filePath);
 	//シェーダーに送る

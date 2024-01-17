@@ -5,10 +5,10 @@
 
 
 
-void Sprite::Initialize(DirectXCommon* directXCommon,SpriteCommon* spriteCommon)
+void Sprite::Initialize(SpriteCommon* spriteCommon)
 {
 	HRESULT hr{};
-	directXCommon_ = directXCommon;
+	directXCommon_ = spriteCommon->GetDirectXCommon();
 	spriteCommon_ = spriteCommon;
 	
 	//画像読み込み
@@ -92,12 +92,11 @@ void Sprite::Draw()
 
 	////コマンドを積む
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
-	directXCommon_->GetCommandList()->SetGraphicsRootSignature(spriteCommon_->GetRootSignature());
-	directXCommon_->GetCommandList()->SetPipelineState(spriteCommon_->GetGraphicsPipelineState());
-	directXCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
-	//形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えよう
-	directXCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
+	//形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えよう
+	
+	
+	directXCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	directXCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress())  ;
 
 	directXCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());

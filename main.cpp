@@ -44,11 +44,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     ImGuiManager* imgui=  ImGuiManager::Create();
     ImGuiManager::Initialize(winApp->GetHwnd(),directXCommon);
+    
     spriteCommon = new SpriteCommon();
     spriteCommon->Initialize(directXCommon);
 
     sprite = new Sprite();
-    sprite->Initialize(directXCommon, spriteCommon);
+    sprite->Initialize(spriteCommon);
 
     // ゲームループ
     while (true) {
@@ -68,7 +69,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         ImGuiManager::CreateCommand();
         directXCommon->PreDraw();
-       
+        spriteCommon->SpritePreDraw();
         sprite->Draw();
 
         ImGuiManager::CommandExcute(directXCommon->GetCommandList());

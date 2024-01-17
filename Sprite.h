@@ -27,7 +27,7 @@ private:
 
 
 public:
-	void Initialize(DirectXCommon* directXCommon, SpriteCommon* spriteCommon);
+	void Initialize(SpriteCommon* spriteCommon);
 
 	void Draw();
 

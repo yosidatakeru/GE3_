@@ -158,6 +158,13 @@ void SpriteCommon::Initialize(DirectXCommon* directXCommon)
 	assert(SUCCEEDED(hr));
 }
 
+void SpriteCommon::SpritePreDraw()
+{
+	directXCommon_->GetCommandList()->SetGraphicsRootSignature(GetRootSignature());
+	directXCommon_->GetCommandList()->SetPipelineState(GetGraphicsPipelineState());
+	directXCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
 
 IDxcBlob* SpriteCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler)
 {
