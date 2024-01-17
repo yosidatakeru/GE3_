@@ -6,7 +6,7 @@
 #include"Sprite.h"
 
 #include"ImGuiManager.h"
-
+#include<Vector>
 
 
 
@@ -19,7 +19,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     WinApp* winApp = nullptr;
     DirectXCommon* directXCommon = nullptr;
     SpriteCommon* spriteCommon = nullptr;
-    Sprite* sprite = nullptr;
+   // Sprite* sprite = nullptr;
 #pragma region WindowsAPI初期化処理
     winApp = new WinApp();
     winApp->Initialize();
@@ -48,9 +48,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     spriteCommon = new SpriteCommon();
     spriteCommon->Initialize(directXCommon);
 
-    sprite = new Sprite();
-    sprite->Initialize(spriteCommon);
+    //複数化
+    std::vector<Sprite*> sprite;
+    for (int i = 0; i < 5; i++)
+    {
+        Sprite* temp = new Sprite();
+        temp->Initialize(spriteCommon);
+        temp->SetPosintion({ (float)i * 1,0 });
+        sprite.push_back(temp);
+    }
 
+    
     // ゲームループ
     while (true) {
         if (winApp->Update() == true)
@@ -59,8 +67,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         }
         ImGuiManager::NewFrame();
         imgui->ShowDemo();
+
         input->Update();
-        sprite->Update();
+
+        
+        //DirectX::XMFLOAT2 pos = sprite->GetPosition();
+        //    //移動処理
+        //pos.x += 0.005;
+        //sprite->SetPosintion(pos);
+        //
+        ////回転の処理
+        //float rot = sprite->GetRotation();
+        //rot += 0.005;
+        //sprite->SetRotaion(rot);
+        //
+        ////色の処理
+        //DirectX::XMFLOAT4 color = sprite->GetColor();
+        //color.x -= 0.1f;
+        //    if (color.x < 0)
+        //    {
+        //        color.x = 1.0f;
+        //    }
+        //    sprite->SetColor(color);
+
+        //    //サイズ
+        //    DirectX::XMFLOAT2 size = sprite->GetSize();
+        //    size.y += 0.01;
+        //    sprite->SetSize(size);
+
+
+        for (int i = 0; i <5 ; i++)
+        {
+            sprite[i]->Update();
+        }
+       
+       
         // 数字の0キーが押されていたら
         if (input->TriggerKey(DIK_0))
         {
@@ -70,8 +111,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         ImGuiManager::CreateCommand();
         directXCommon->PreDraw();
         spriteCommon->SpritePreDraw();
-        sprite->Draw();
-
+        for (int i = 0; i < 5; i++)
+        {
+            sprite[i]->Draw();
+        }
         ImGuiManager::CommandExcute(directXCommon->GetCommandList());
 
         directXCommon->PosDeaw();
@@ -84,8 +127,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     delete input;
     delete winApp;
     delete directXCommon;
-    delete sprite;
-   
+    for (int i = 0; i < 5; i++)
+    {
+        delete sprite[i];
+    }
 
    
     return 0;
