@@ -18,6 +18,14 @@ private:
 		DirectX::XMFLOAT3 translate;
 	};
 
+	struct  VertexData
+	{
+		DirectX::XMFLOAT4 position;
+		DirectX::XMFLOAT2 texcoord;
+	};
+
+
+
 public:
 	void Initialize(DirectXCommon* directXCommon, SpriteCommon* spriteCommon);
 
@@ -47,7 +55,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource;
 
 	//色のパラメータ
-	DirectX::XMFLOAT4 color_ = { 1.0f, 0.0f, 0.0f, 1.0f };
+	DirectX::XMFLOAT4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	DirectX::XMMATRIX* wvpData = nullptr;
 
@@ -56,4 +64,9 @@ private:
 
 	//カメラ
 	Transform camreaTransform = { {1,1,1}, {0,0,0}, {0,0,-5} };
+
+	//画像の保蔵先のアドレス
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
+	
+
 };
