@@ -17,24 +17,36 @@ private:
 		DirectX::XMFLOAT3 rotate;
 		DirectX::XMFLOAT3 translate;
 	};
-
+	
+	//頂点情報
 	struct  VertexData
 	{
 		DirectX::XMFLOAT4 position;
 		DirectX::XMFLOAT2 texcoord;
 	};
 
+   //マテリアル
+	struct MaterialData
+	{
+		DirectX::XMFLOAT4 color;
+		DirectX::XMMATRIX uvTransform;
+	};
 
 
 public:
 	void Initialize(SpriteCommon* spriteCommon);
 
+	void Update();
+
 	void Draw();
+	
 
 private:
 	//頂点データの作成関数
 	void CreateVertex();
 
+	//インデックス情報作成
+	void CreateIndex();
 	//マテリアルの作成関数
 	void CreateMAterial();
 
@@ -47,9 +59,13 @@ private:
 	SpriteCommon* spriteCommon_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
-
+	
+	//インデックス
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
 	//マテリアル
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
+	MaterialData* materialData = nullptr;
 
 	//行列
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource;
@@ -59,6 +75,8 @@ private:
 
 	DirectX::XMMATRIX* wvpData = nullptr;
 
+	//UV座標
+	Transform uvTransform = { {1,1,1}, {0,0,0}, {0,0,0} };
 
 	Transform transform = { {1,1,1}, {0,0,0}, {0,0,0} };
 

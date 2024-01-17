@@ -60,7 +60,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         ImGuiManager::NewFrame();
         imgui->ShowDemo();
         input->Update();
-       
+        sprite->Update();
         // 数字の0キーが押されていたら
         if (input->TriggerKey(DIK_0))
         {

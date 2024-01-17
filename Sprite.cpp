@@ -2,7 +2,7 @@
 #include<d3d12.h>
 #include<wrl.h>
 #include"Bufftr.h"
-
+#include"externals/imgui/imgui.h"
 
 
 void Sprite::Initialize(SpriteCommon* spriteCommon)
@@ -46,10 +46,22 @@ void Sprite::Initialize(SpriteCommon* spriteCommon)
 
 
 	CreateVertex();
+	//インデクス
+	CreateIndex();
 	
 	CreateMAterial();
 
 	CreateWVP();
+}
+
+void Sprite::Update()
+{
+	ImGui::Begin("texture");
+	ImGui::DragFloat3("UV_Pos", &uvTransform.translate.x, 0.01f, -10.0f, 10.0f);
+	ImGui::SliderAngle("UV_Pos", &uvTransform.translate.z);
+	ImGui::DragFloat3("UV_Pos", &uvTransform.translate.x, 0.01f, -10.0f, 10.0f);
+
+	ImGui::End();
 }
 
 void Sprite::Draw()
@@ -90,37 +102,61 @@ void Sprite::Draw()
 
 
 
+
+	//UV座標
+	XMMATRIX uvScaleMatrix = XMMatrixScalingFromVector(XMLoadFloat3(&uvTransform.scale));
+	XMMATRIX uvRotateMatrix = XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&uvTransform.rotate));
+	XMMATRIX uvTranslationMatrix = XMMatrixTranslationFromVector(XMLoadFloat3(&uvTransform.translate));
+
+	//回転行列とスケール行列
+	XMMATRIX uvRotationAndScaleMatrix = XMMatrixMultiply(uvRotateMatrix, uvScaleMatrix);
+
+	//最終的行列返還
+	XMMATRIX uvWorldMatrix = XMMatrixMultiply(uvRotationAndScaleMatrix, uvTranslationMatrix);
+	materialData->uvTransform = uvWorldMatrix;
+
+
+
+
+
 	////コマンドを積む
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	
 	//形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えよう
 	
-	
+	//頂点情報
 	directXCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
+	
+	//インデクス情報
+	directXCommon_->GetCommandList()->IASetIndexBuffer(&indexBufferView);
+
+	//色情報
 	directXCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress())  ;
 
+	//行列
 	directXCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
 
-	//画僧
+	//画像
 	directXCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2,textureSrvHandleGPU);
 
 	
-
-	//描画(DrawCall)３兆点で１つのインスタンス。
-	directXCommon_->GetCommandList()->DrawInstanced(6, 1, 0, 0);
+	directXCommon_->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
+	//directXCommon_->GetCommandList()->DrawInstanced(6, 1, 0, 0);
 
 }
+
+
 
 void Sprite::CreateVertex()
 {
 	////VertexBufferViewを作成
 	//頂点バッファビューを作成する
-	vertexResource = CreateBufferResource(directXCommon_->GetDevice(), sizeof(VertexData) * 6);
+	vertexResource = CreateBufferResource(directXCommon_->GetDevice(), sizeof(VertexData) * 4);
 
 	//リソースの先頭のアドレスから使う
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
 	//使用するリソースのサイズは頂点３つ分のサイズ
-	vertexBufferView.SizeInBytes = sizeof(VertexData) * 6;
+	vertexBufferView.SizeInBytes = sizeof(VertexData) * 4;
 	//１頂点あたりのサイズ
 	vertexBufferView.StrideInBytes = sizeof(VertexData);
 
@@ -139,32 +175,56 @@ void Sprite::CreateVertex()
 	vertexData[2].position = { 0.5f,-0.5f,0.0f,1.0f };
 	vertexData[2].texcoord = { 1.0f,1.0f };
 
-	//左下
-	vertexData[3].position = { -0.5f,+0.5f,0.0f,1.0f };
-	vertexData[3].texcoord = { 0.0f,0.0f };
 	//上
-	vertexData[4].position = { 0.5f,0.5f,0.0f,1.0f };
-	vertexData[4].texcoord = { 1.0f,0.0f };
-	//右下
-	vertexData[5].position = { 0.5f,-0.5f,0.0f,1.0f };
-	vertexData[5].texcoord = { 1.0f,1.0f };
-
-
+	vertexData[3].position = { 0.5f,0.5f,0.0f,1.0f };
+	vertexData[3].texcoord = { 1.0f,0.0f };
+	
 	
 }
+
+
+void Sprite::CreateIndex()
+{
+	indexResource = CreateBufferResource(directXCommon_->GetDevice(), sizeof(uint32_t) * 6);
+
+	//リソースの先頭のアドレスから使う
+	indexBufferView.BufferLocation = indexResource->GetGPUVirtualAddress();
+	//使用するリソースのサイズは頂点３つ分のサイズ
+	indexBufferView.SizeInBytes = sizeof(uint32_t) * 6;
+	//１頂点あたりのサイズ
+	indexBufferView.Format = DXGI_FORMAT_R32_UINT;
+
+	//Resourceにデータを書き込む
+	uint32_t* indexData = nullptr;
+	//書き込むためのアドレスを取得
+	indexResource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
+
+	//三角形一枚作成
+	indexData[0] = 0;
+	indexData[1] = 1;
+	indexData[2] = 2;
+
+	//三角形１枚作製
+	indexData[3] = 1;
+	indexData[4] = 3;
+	indexData[5] = 2;
+}
+
+
 
 void Sprite::CreateMAterial()
 {
 	//マテリアルにデータを書き込む
-	materialResource = CreateBufferResource(directXCommon_->GetDevice(), sizeof(XMFLOAT4));
-	XMFLOAT4* materialData = nullptr;
-
+	materialResource = CreateBufferResource(directXCommon_->GetDevice(), sizeof(MaterialData));
+	
 	//書き込むためのアドレスを取得
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 
 	//今回は赤を書き込む(ここで色を変えられる)
-	*materialData = color_;
+	materialData->color = color_;
 
+	materialData->uvTransform = XMMatrixIdentity();
+	
 
 }
 
