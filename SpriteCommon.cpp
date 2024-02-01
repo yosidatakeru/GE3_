@@ -248,48 +248,28 @@ IDxcBlob* SpriteCommon::CompileShader(const std::wstring& filePath, const wchar_
 
 }
 
-DirectX::ScratchImage SpriteCommon::LoadTexture(const std::wstring& filePath)
-{
-	HRESULT hr{};
-	//テクスチャファイルを読んでプログラムで扱えるようにする
-	DirectX::ScratchImage image{};
-	
-	hr = DirectX::LoadFromWICFile(filePath.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
-	assert(SUCCEEDED(hr));
 
-	//ミップマップの作成
-	//ミップマップ...元画像より小さなテクスチャ群
-	DirectX::ScratchImage mipImages{};
-	hr = DirectX::GenerateMipMaps(
-	image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-	DirectX::TEX_FILTER_SRGB, 0, mipImages);
-	assert(SUCCEEDED(hr));
 
-	//ミップマップ月のデータを返す
-	return image;
-	
-}
-
-void SpriteCommon::UploadTewtureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages)
-{
-	
-	//Meta情報を取得
-	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-
-	//全MipMapについて
-	for (size_t mipLevel = 0; mipLevel < metadata.mipLevels; ++mipLevel)
-	{
-		//MipMapLevelを指定して各Imageを取得
-		const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
-		//Textureに転送
-		HRESULT hr = texture->WriteToSubresource(
-			UINT(mipLevel),
-			nullptr,				//全領域
-			img->pixels,			//元データアドレス
-			UINT(img->rowPitch),	//1ラインサイズ
-			UINT(img->slicePitch));	//1枚サイズ
-
-		assert(SUCCEEDED(hr));
-	}
-
-}
+////void SpriteCommon::UploadTewtureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages)
+//{
+//	
+//	//Meta情報を取得
+//	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
+//
+//	//全MipMapについて
+//	for (size_t mipLevel = 0; mipLevel < metadata.mipLevels; ++mipLevel)
+//	{
+//		//MipMapLevelを指定して各Imageを取得
+//		const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
+//		//Textureに転送
+//		HRESULT hr = texture->WriteToSubresource(
+//			UINT(mipLevel),
+//			nullptr,				//全領域
+//			img->pixels,			//元データアドレス
+//			UINT(img->rowPitch),	//1ラインサイズ
+//			UINT(img->slicePitch));	//1枚サイズ
+//
+//		assert(SUCCEEDED(hr));
+//	}
+//
+//}

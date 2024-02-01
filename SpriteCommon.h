@@ -26,9 +26,8 @@ public:
 	DirectXCommon* GetDirectXCommon() { return directXCommon_;}
 
 
-	DirectX::ScratchImage LoadTexture(const std::wstring& filePath);
-	//シェーダーに送る
-	void UploadTewtureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
+	
+	
 private:
 	DirectXCommon* directXCommon_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignature;

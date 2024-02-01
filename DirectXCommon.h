@@ -25,6 +25,9 @@ public:
 	D3D12_RENDER_TARGET_VIEW_DESC GetRtvDesc()const { return rtvDesc; }
 
 	ID3D12DescriptorHeap* GetSrvDescriptorHeap() const { return srvDescriptorHeapDesc.Get(); }
+public:
+	static const uint32_t kmixSRVcount;
+
 
 private:
 	//デバイスの初期化

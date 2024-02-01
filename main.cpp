@@ -8,7 +8,7 @@
 #include"ImGuiManager.h"
 #include<Vector>
 
-
+#include"TextureManager.h"
 
 
 
@@ -48,13 +48,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     spriteCommon = new SpriteCommon();
     spriteCommon->Initialize(directXCommon);
 
+    //テクスチャマネージャー
+    TextureManager::GetInstance()->Initialize(directXCommon);
+    TextureManager::GetInstance()->LoadTexture(L"Resources/uvChecker.png");
+    
     //複数化
     std::vector<Sprite*> sprite;
     for (int i = 0; i < 5; i++)
     {
         Sprite* temp = new Sprite();
-        temp->Initialize(spriteCommon);
-        temp->SetPosintion({ (float)i * 1,0 });
+        temp->Initialize(spriteCommon, L"Resources/uvChecker.png");
+        temp->SetPosintion({ (float)i * 120,0 });
         sprite.push_back(temp);
     }
 
@@ -122,16 +126,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         
 
     }
+    for (int i = 0; i < 5; i++)
+    {
+        delete sprite[i];
+    }
+    TextureManager::GetInstance()->Finalize();
     delete imgui;
     winApp->Finalize();
     delete input;
     delete winApp;
     delete directXCommon;
-    for (int i = 0; i < 5; i++)
-    {
-        delete sprite[i];
-    }
-
+   
    
     return 0;
 }

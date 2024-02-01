@@ -34,7 +34,7 @@ private:
 
 
 public:
-	void Initialize(SpriteCommon* spriteCommon);
+	void Initialize(SpriteCommon* spriteCommon,std::wstring textureFilePath);
 
 	void Update();
 
@@ -100,12 +100,16 @@ private:
 	float rotation = 0;
 
 	//サイズ管理
-	DirectX::XMFLOAT2 size = { 1,1 };
+	DirectX::XMFLOAT2 size = { 512,512 };
+	
+	//画像の保存場所
+	uint32_t textureIndex_ = 0;
 	//カメラ
 	Transform camreaTransform = { {1,1,1}, {0,0,0}, {0,0,-5} };
 
+
 	//画像の保蔵先のアドレス
-	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
+	
 	
 
 };
