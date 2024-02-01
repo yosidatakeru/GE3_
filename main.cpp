@@ -51,13 +51,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     //テクスチャマネージャー
     TextureManager::GetInstance()->Initialize(directXCommon);
     TextureManager::GetInstance()->LoadTexture(L"Resources/uvChecker.png");
-    
+    TextureManager::GetInstance()->LoadTexture(L"Resources/mario.jpg");
     //複数化
     std::vector<Sprite*> sprite;
     for (int i = 0; i < 5; i++)
     {
         Sprite* temp = new Sprite();
-        temp->Initialize(spriteCommon, L"Resources/uvChecker.png");
+        if (i % 2 == 0) { temp->Initialize(spriteCommon, L"Resources/uvChecker.png"); }
+        else if(i%2 ==1) { temp->Initialize(spriteCommon, L"Resources/mario.jpg"); }
         temp->SetPosintion({ (float)i * 120,0 });
         sprite.push_back(temp);
     }
