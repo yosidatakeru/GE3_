@@ -57,8 +57,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     for (int i = 0; i < 5; i++)
     {
         Sprite* temp = new Sprite();
-        if (i % 2 == 0) { temp->Initialize(spriteCommon, L"Resources/uvChecker.png"); }
-        else if(i%2 ==1) { temp->Initialize(spriteCommon, L"Resources/mario.jpg"); }
+         temp->Initialize(spriteCommon, L"Resources/uvChecker.png"); 
+      
         temp->SetPosintion({ (float)i * 120,0 });
         sprite.push_back(temp);
     }

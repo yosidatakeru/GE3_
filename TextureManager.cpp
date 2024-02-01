@@ -125,6 +125,21 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetStvHandleGPU(uint32_t textureInde
 
 
 
+const DirectX::TexMetadata& TextureManager::GetMetaData(uint32_t textureIndex)
+{
+	//対象の要素番号が範囲外かどうかを調べる
+	assert(textureIndex < DirectXCommon::kmixSRVcount);
+
+	//要素番号のテクスチャデータのを受け取る
+	TexTureData& textureData = textureDatas[textureIndex];
+
+	return textureData.metaData;
+
+}
+
+
+
+
 
 void TextureManager::UploadTewtureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages)
 {
