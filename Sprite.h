@@ -54,6 +54,9 @@ public:
 	//サイズ
 	DirectX::XMFLOAT2 GetSize()              { return size; }
 	void SetSize(DirectX::XMFLOAT2 size) { this->size = size; }
+
+	void SetTexture(std::wstring textureFilePath);
+
 private:
 	//頂点データの作成関数
 	void CreateVertex();
